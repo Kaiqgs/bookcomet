@@ -28,7 +28,7 @@ python -m unittest discover App/Tests -p "*.py"
 python3 -m unittest discover App/Tests -p "*.py"
 
 # verbose example;
-python -m unittest discover App -p "*.py" -s "App/Tests" -v
+python -m unittest discover App -p "*.py" -v
 ```
 
 ## <span id="dependencies"> Dependencies </span>
