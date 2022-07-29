@@ -153,7 +153,8 @@ confidence=HIGH,
 #         deprecated-pragma,
 #         use-symbolic-message-instead
 
-disable=no-name-in-module
+disable=no-name-in-module,
+        invalid-name
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where

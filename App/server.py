@@ -36,15 +36,42 @@ def connect_get_database():
 
 
 connect_get_database()
+description = \
+"""
+BookComet storage for inventory manegemnt 🚀.
+
+
+## Book
+You can:
+* **Create books**;
+* **Read books**;
+* **Update books**;
+* **Delete books**;
+
+Every book needs an author.
+So make sure to input the author in first.
+
+## Author
+
+The author is the creator of an book.
+Pass the author name as input when creating a book.
+
+## eBook
+Just like a book, but with digital attributes.
+
+## Inventory
+Store and manage books.
+"""
+
 app = FastAPI(
     title="BookCometStorage",
-    description="",
-    version="0.0.1",
+    description=description,
+    version="0.0.A",
     terms_of_service="http://example.com/terms/",
     contact={
-        "name": "Deadpoolio the Amazing",
-        "url": "http://x-force.example.com/contact/",
-        "email": "dp@x-force.example.com",
+        "name": "Kaique dos Santos",
+        "url": "https://github.com/Kaiqgs",
+        "email": "kags_@live.com",
     },
     license_info={
         "name": "GNU 3.0",

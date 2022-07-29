@@ -1,3 +1,8 @@
+"""Update operations
+
+Update book functionality, with optional overriding.
+"""
+
 import http.client as code
 from typing import Union
 
@@ -22,7 +27,7 @@ class UpdateBookIn(BaseModel):
     summary: Union[str, None]
 
 
-@router.put(Routes.UpdateBook.value)
+@router.put(Routes.UPDATE_BOOK.value)
 @sys_authorize
 async def update_book(id: int, updtbook: UpdateBookIn):
     """

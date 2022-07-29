@@ -21,7 +21,7 @@ class TestOperations(unittest.TestCase):
 
     def sysignin(self):
         "Signs in with correct login and password."
-        response = self.tclient.post(Routes.SignIn.value, tojson(
+        response = self.tclient.post(Routes.SIGNIN.value, tojson(
             AuthIn(login=SYS_LOGIN, password=SYS_PWD)))
         self.assertEqual(response.status_code, code.OK.value)
         return response
@@ -33,11 +33,11 @@ class TestOperations(unittest.TestCase):
         cls.tclient = TestClient(app)
 
         testresp = cls.tclient.post(
-            Routes.SetTesting.value.format(state="false"))
+            Routes.SET_TESTING.value.format(state="false"))
 
         assert testresp.status_code == code.OK.value, "Could not set testing."
 
-        cls.tclient.post(Routes.SignOff.value)
+        cls.tclient.post(Routes.SIGNOFF.value)
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -49,47 +49,51 @@ class TestOperations(unittest.TestCase):
         connect_get_database()
 
     def test_authorization_flow(self) -> None:
+        """
+            Test an example user on an try-retry login + read attempt.
+        """
+
         # logoff while being logged off;
-        response = self.tclient.post(Routes.SignOff.value)
+        response = self.tclient.post(Routes.SIGNOFF.value)
         self.assertEqual(response.status_code, code.UNPROCESSABLE_ENTITY.value)
 
         # attempt wrong credentials;
-        response = self.tclient.post(Routes.SignIn.value, tojson(
+        response = self.tclient.post(Routes.SIGNIN.value, tojson(
             AuthIn(login="!@nonexisting!@", password="inexistent")))
         self.assertEqual(response.status_code, code.UNAUTHORIZED.value)
 
         # attempt reading from wrong credentials;
-        response = self.tclient.get(Routes.ReadBooks.value)
+        response = self.tclient.get(Routes.READ_BOOKS.value)
         self.assertEqual(response.status_code, code.UNAUTHORIZED.value)
 
         # login with correct credentials;
         self.sysignin()
 
         # attempt read with right credentials;
-        response = self.tclient.get(Routes.ReadBooks.value)
+        response = self.tclient.get(Routes.READ_BOOKS.value)
         self.assertEqual(response.status_code, code.OK.value)
 
         # attempt logoff;
-        response = self.tclient.post(Routes.SignOff.value)
+        response = self.tclient.post(Routes.SIGNOFF.value)
         self.assertEqual(response.status_code, code.OK.value)
 
     def test_book_creation_flow(self):
 
         self.sysignin()
 
-        readbookresponse = self.tclient.get(Routes.ReadBooks.value)
+        readbookresponse = self.tclient.get(Routes.READ_BOOKS.value)
         readbookdata = readbookresponse.json()
         self.assertEqual(readbookresponse.status_code, code.OK.value)
 
         if not readbookdata:
-            self.tclient.get(Routes.NewSamples.value.format(1))
-            readbookresponse = self.tclient.get(Routes.ReadBooks.value)
+            self.tclient.get(Routes.CREATE_SAMPLES.value.format(1))
+            readbookresponse = self.tclient.get(Routes.READ_BOOKS.value)
             readbookdata = readbookresponse.json()
             self.assertEqual(readbookresponse.status_code, code.OK.value)
 
         authorname = readbookdata[0]["authors"][0]["name"]
         bookresponse = self.tclient.post(
-            Routes.CreateBook.value.format(
+            Routes.CREATE_BOOK.value.format(
                 author=authorname), tojson(
                 BookIn(
                     name=randname(5), publisher=randname(10), yearofpub=random.randint(
@@ -99,7 +103,7 @@ class TestOperations(unittest.TestCase):
         self.assertEqual(bookresponse.status_code, code.CREATED.value)
 
         upresponse = self.tclient.put(
-            Routes.UpdateBook.value.format(
+            Routes.UPDATE_BOOK.value.format(
                 id=bookdata["id"]),
             tojson(
                 UpdateBookIn(
@@ -113,6 +117,6 @@ class TestOperations(unittest.TestCase):
         self.assertEqual(upresponse.status_code, code.OK.value)
 
         deleteresponse = self.tclient.delete(
-            Routes.DeleteBook.value.format(id=bookdata["id"]))
+            Routes.DELETE_BOOK.value.format(id=bookdata["id"]))
 
         self.assertEqual(deleteresponse.status_code, code.OK.value)

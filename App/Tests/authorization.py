@@ -1,3 +1,8 @@
+"""Authorization operations
+
+Tests on attempting reading every sys_authorized() route.
+"""
+
 import http.client as code
 import random
 import unittest
@@ -31,11 +36,11 @@ class AuthorizationTests(unittest.TestCase):
         cls.tclient = TestClient(app)
 
         testresp = cls.tclient.post(
-            Routes.SetTesting.value.format(state="false"))
+            Routes.SET_TESTING.value.format(state="false"))
 
         assert testresp.status_code == code.OK.value, "Could not set testing."
 
-        signresp = cls.tclient.post(Routes.SignIn.value,
+        signresp = cls.tclient.post(Routes.SIGNIN.value,
                                     json={"login": SYS_LOGIN,
                                           "password": SYS_PWD})
 
@@ -50,12 +55,13 @@ class AuthorizationTests(unittest.TestCase):
         super().__init__(methodName)
         connect_get_database()
 
+    # pylint: disable=missing-function-docstring
     def assertBase(self, response):
         self.assertNotEqual(response.status_code, code.UNAUTHORIZED.value)
         self.assertNotEqual(response.status_code, code.NOT_FOUND.value)
 
     def read_book_id(self):
-        booksread = self.tclient.get(Routes.ReadBooks.value)
+        booksread = self.tclient.get(Routes.READ_BOOKS.value)
         self.assertEqual(booksread.status_code, code.OK.value)
         self.assertBase(booksread)
 
@@ -63,7 +69,7 @@ class AuthorizationTests(unittest.TestCase):
 
     def create_book(self, name=randname(255)):
         newbook = self.tclient.post(
-            Routes.CreateBook.value.format(author=self.resources["author"]),
+            Routes.CREATE_BOOK.value.format(author=self.resources["author"]),
             tojson(BookIn(name=name,
                           publisher=randname(),
                           yearofpub=random.randint(1800, 2000),
@@ -75,7 +81,7 @@ class AuthorizationTests(unittest.TestCase):
 
     def test_create_author(self):
         response = self.tclient.post(
-            Routes.CreateAuthor.value, tojson(
+            Routes.CREATE_AUTHOR.value, tojson(
                 AuthorIn(
                     name=self.resources["author"])))
 
@@ -96,7 +102,7 @@ class AuthorizationTests(unittest.TestCase):
         self.resources["todelete"].append(bid)
 
         response = self.tclient.post(
-            Routes.CreateEBook.value.format(id=bid),
+            Routes.CREATE_EBOOK.value.format(id=bid),
             tojson(eBookIn(id=bid, format=random.choice(list(Formats))))
         )
 
@@ -108,7 +114,7 @@ class AuthorizationTests(unittest.TestCase):
         self.resources["todelete"].append(bid)
 
         response = self.tclient.post(
-            Routes.CreateInventory.value,
+            Routes.CREATE_INVENTORY.value,
             InventoryIn(identifier=random.choice(units),
                         bookid=bid,
                         quantity=random.randint(0, 20))
@@ -118,7 +124,7 @@ class AuthorizationTests(unittest.TestCase):
 
     def test_update_book(self):
         response = self.tclient.put(
-            Routes.UpdateBook.value.format(id=self.resources["bookid"]),
+            Routes.UPDATE_BOOK.value.format(id=self.resources["bookid"]),
             tojson(UpdateBookIn(publisher=randname(),
                                 yearofpub=random.randint(1800, 2000),
                                 summary=randname(256)))
@@ -129,11 +135,11 @@ class AuthorizationTests(unittest.TestCase):
     def test_delete_book(self):
         for id in self.resources["todelete"]:
             response = self.tclient.post(
-                Routes.UpdateBook.value.format(id=id)
+                Routes.UPDATE_BOOK.value.format(id=id)
             )
             self.assertBase(response)
 
     def test_read_books(self):
-        response = self.tclient.get(Routes.ReadBooks.value)
+        response = self.tclient.get(Routes.READ_BOOKS.value)
         self.assertEqual(response.status_code, code.OK.value)
         self.assertBase(response)

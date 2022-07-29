@@ -1,3 +1,7 @@
+"""BookComet App
+
+Definition on basic functionality.
+"""
 from functools import wraps
 
 from fastapi import HTTPException

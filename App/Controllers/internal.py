@@ -1,3 +1,4 @@
+"""Internal functionality"""
 import http.client as code
 
 from fastapi import HTTPException
@@ -10,7 +11,7 @@ from App.Controllers import Routes
 router = APIRouter()
 
 
-@router.get(Routes.Home.value)
+@router.get(Routes.HOME.value)
 async def home():
     "First user interaction."
     return {"about": "Welcome to BookComet storage interface."}
@@ -22,7 +23,7 @@ class AuthIn(BaseModel):
     password: str
 
 
-@router.post(Routes.SignIn.value, status_code=code.OK.value)
+@router.post(Routes.SIGNIN.value, status_code=code.OK.value)
 async def signin(authentication: AuthIn):
     "Signs in based on authentication input."
     if authentication.login == SYS_LOGIN and \
@@ -33,7 +34,7 @@ async def signin(authentication: AuthIn):
         raise HTTPException(code.UNAUTHORIZED.value, "Wrong credentials.")
 
 
-@router.post(Routes.SignOff.value, status_code=code.OK.value)
+@router.post(Routes.SIGNOFF.value, status_code=code.OK.value)
 async def signoff():
     "Signs off, therefore removing authorization."
     if simple_session["authorized"]:
@@ -44,7 +45,7 @@ async def signoff():
         "You're already signed off.")
 
 
-@router.post(Routes.SetTesting.value, status_code=code.OK.value)
+@router.post(Routes.SET_TESTING.value, status_code=code.OK.value)
 async def set_testing(state: bool):
     "Sets the state of development-testing functionality."
 

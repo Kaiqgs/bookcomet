@@ -1,3 +1,4 @@
+"""Create operations"""
 import http.client as code
 import random
 
@@ -26,7 +27,7 @@ class AuthorIn(BaseModel):
     name: str
 
 
-@router.post(Routes.CreateAuthor.value, status_code=code.CREATED.value)
+@router.post(Routes.CREATE_AUTHOR.value, status_code=code.CREATED.value)
 @sys_authorize
 async def new_author(author: AuthorIn):
     with Session(engine) as sess:
@@ -51,7 +52,7 @@ class BookIn(BaseModel):
     summary: str
 
 
-@router.post(Routes.CreateBook.value, status_code=code.CREATED.value)
+@router.post(Routes.CREATE_BOOK.value, status_code=code.CREATED.value)
 @sys_authorize
 async def new_book(author: str, book: BookIn):
     with Session(engine) as sess:
@@ -86,7 +87,7 @@ class eBookIn(BaseModel):
     format: e.Formats
 
 
-@router.post(Routes.CreateEBook.value, status_code=code.CREATED.value)
+@router.post(Routes.CREATE_EBOOK.value, status_code=code.CREATED.value)
 @sys_authorize
 async def new_ebook(ebook: eBookIn):
 
@@ -112,7 +113,7 @@ class InventoryIn(BaseModel):
     quantity: int
 
 
-@router.post(Routes.CreateInventory.value, status_code=code.CREATED.value)
+@router.post(Routes.CREATE_INVENTORY.value, status_code=code.CREATED.value)
 @sys_authorize
 async def new_inventory(inventory: InventoryIn):
 
@@ -132,7 +133,7 @@ async def new_inventory(inventory: InventoryIn):
             raise errmsgs("book", code.NOT_FOUND.value)
 
 
-@router.post(Routes.NewSamples.value)
+@router.post(Routes.CREATE_SAMPLES.value)
 @sys_authorize
 async def new_samples(quantity: int):
 
@@ -140,10 +141,10 @@ async def new_samples(quantity: int):
         quantity = 10
 
     with Session(engine) as sess:
-        df = pd.read_csv("books.csv", header=0)
+        dataframe = pd.read_csv("books.csv", header=0)
 
-        for idx in random.choices(df.index.values, k=quantity):
-            row = df.iloc[idx]
+        for idx in random.choices(dataframe.index.values, k=quantity):
+            row = dataframe.iloc[idx]
 
             authors = []
             authornames = row["authors"].split("/")

@@ -33,7 +33,7 @@ python -m unittest discover App -p "*.py" -s "App/Tests" -v
 
 ## <span id="dependencies"> Dependencies </span>
 * SqlAlchemy → ORM object to sql mapper:
-    * SchemaDisplay lib → schema visualization;
+    * SchemaDisplay lib → schema [visualization](#schema-view);
 
 * Pandas → used for migrating .csv data into MySQL;
 * FastAPI → used for routing, HTTP request handling, web & much more;
@@ -53,9 +53,11 @@ A similar approach is used for eBooks requirement, where it inherits book attrib
 
 Since Books can have multiple authors, author becomes an entity by itself.
 
-*note: relational databases were not a project requirement, but the author found it interesting for displaying agile implementations*
+*note: relational databases were not a project requirement, but the author found it interesting for displaying agile implementations.*
 
-![database schema](schema.png "BookComet Schema")
+
+<img src="schema.png" alt="BookComet relational db schema." id="schema-view">
+<figcaption align="center"><b>Fig.1 - Final database schema;</b></figcaption>
 
 ---
 ## License

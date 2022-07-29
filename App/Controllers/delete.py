@@ -1,3 +1,9 @@
+"""Delete operations
+
+All logic on deleting books, and proper handling for inventory.
+
+"""
+
 import http.client as code
 
 from fastapi.routing import APIRouter
@@ -12,7 +18,7 @@ from App.msgs import errmsgs
 router = APIRouter()
 
 
-@router.delete(Routes.DeleteBook.value, status_code=code.OK.value)
+@router.delete(Routes.DELETE_BOOK.value, status_code=code.OK.value)
 @sys_authorize
 async def delete_book(id: int):
     "Deletes book found with ID, if it is not w/ positive inventory."

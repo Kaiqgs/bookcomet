@@ -18,7 +18,7 @@ from App.Domain.publication import Publication
 router = APIRouter()
 
 
-@router.get(Routes.ReadBooks.value)
+@router.get(Routes.READ_BOOKS.value)
 @sys_authorize
 async def list_books(bookname: Union[str, None] = None,
                      authorname: Union[str, None] = None,

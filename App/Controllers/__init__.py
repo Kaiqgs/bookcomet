@@ -1,3 +1,8 @@
+"""Controllers
+
+Handling of requests and data management.
+"""
+
 from enum import Enum
 
 # Regex for matching unvalued Routes:
@@ -8,19 +13,20 @@ class Routes(Enum):
     """
     Enumerates operations and URIs.
     """
-    CreateAuthor = "/new-author/"
-    CreateBook = "/new-book/{author}"
-    CreateEBook = "/new-ebook/"
-    CreateInventory = "/new-inventory/"
-    NewSamples = "/new-samples/{quantity}"
 
-    ReadBooks = "/list-books/"
+    CREATE_AUTHOR = "/new-author/"
+    CREATE_BOOK = "/new-book/{author}"
+    CREATE_EBOOK = "/new-ebook/"
+    CREATE_INVENTORY = "/new-inventory/"
+    CREATE_SAMPLES = "/new-samples/{quantity}"
 
-    DeleteBook = "/delete-book/{id}"
+    READ_BOOKS = "/list-books/"
 
-    UpdateBook = "/update-book/{id}"
+    DELETE_BOOK = "/delete-book/{id}"
 
-    SetTesting = "/set-testing/{state}"
-    SignIn = "/signin/"
-    SignOff = "/signoff/"
-    Home = "/"
+    UPDATE_BOOK = "/update-book/{id}"
+
+    SET_TESTING = "/set-testing/{state}"
+    SIGNIN = "/signin/"
+    SIGNOFF = "/signoff/"
+    HOME = "/"

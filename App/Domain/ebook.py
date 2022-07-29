@@ -21,6 +21,7 @@ class eBook(Base, IBook):
 
     book: IBook = relationship("Book", back_populates="digital")
 
+    # pylint: disable=missing-function-docstring
     @hybrid_property
     def name(self):
         return self.book.name
@@ -40,6 +41,7 @@ class eBook(Base, IBook):
     @hybrid_property
     def summary(self):
         return self.book.summary
+    # pylint: enable=missing-function-docstring
 
     def __repr__(self) -> str:
         return f"<eBook[{self.id:03d}]: digital {self.format}, {self.name}>"
