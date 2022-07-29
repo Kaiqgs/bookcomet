@@ -2,6 +2,11 @@
 # # ** due to no auto mapping for parent relationship attributes, w/ foreign key inheritance;
 # Book Interface;
 class IBook:
+    """
+    Book interface.
+    Used for linting, type hinting and multiple inheritance pattern.
+    """
+
     __abstract__ = True
     id: int
     name: str

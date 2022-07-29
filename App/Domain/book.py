@@ -1,14 +1,17 @@
+import sqlalchemy as sqa
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship
+
 from App.Domain import Base
 from App.Domain.publication import Publication
 from App.Models.book import IBook
-import sqlalchemy as sqa
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.hybrid import hybrid_property
-
-# class Queryable
 
 
 class Book(Base, IBook):
+    """
+    Book entity ORM mapped.
+    """
+
     __tablename__ = "books"
     id = sqa.Column(sqa.Integer, primary_key=True)
     name = sqa.Column(sqa.String(256))
@@ -30,8 +33,10 @@ class Book(Base, IBook):
 
     @hybrid_property
     def relations(self) -> dict:
+        "Book non direct relationships."
         return {"authors": self.authors,
-                "inventories": self.inventories, "digital": self.digital}
+                "inventories": self.inventories,
+                "digital": self.digital}
 
     def __repr__(self) -> str:
         return f"<Book[{self.id:03d}]: {self.name} w/ {self.publisher} @ {self.yearofpub:04d}>"

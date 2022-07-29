@@ -1,11 +1,14 @@
-from App.Domain import Base
-from App.Domain.publication import Publication
-
 import sqlalchemy as sqa
 from sqlalchemy.orm import relationship
 
+from App.Domain import Base
+from App.Domain.publication import Publication
+
 
 class Author(Base):
+    """
+    Author entity ORM mapped.
+    """
     __tablename__ = "authors"
 
     id = sqa.Column(sqa.Integer, primary_key=True)

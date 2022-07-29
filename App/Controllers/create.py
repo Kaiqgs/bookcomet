@@ -1,26 +1,32 @@
-from App.Controllers.db import engine
-import App.Models.ebook as e
-import App.Models.inventory as inv
-from App.Domain.book import Book
-from App.Domain.author import Author
-from App.Domain.publication import Publication
-from App.Domain.inventory import Inventory
-from App.Domain.ebook import eBook
-from App.msgs import errmsgs
-from App import sys_authorize
+import http.client as code
+import random
 
+import pandas as pd
+from fastapi.routing import APIRouter
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from fastapi.routing import APIRouter
+
+import App.Models.ebook as e
+import App.Models.inventory as inv
+from App import sys_authorize
+from App.Controllers import Routes
+from App.Controllers.db import engine
+from App.Domain.author import Author
+from App.Domain.book import Book
+from App.Domain.ebook import eBook
+from App.Domain.inventory import Inventory
+from App.Domain.publication import Publication
+from App.msgs import errmsgs
 
 router = APIRouter()
 
 
 class AuthorIn(BaseModel):
+    "Author creation input."
     name: str
 
 
-@router.post("/new-author/", status_code=201)
+@router.post(Routes.CreateAuthor.value, status_code=code.CREATED.value)
 @sys_authorize
 async def new_author(author: AuthorIn):
     with Session(engine) as sess:
@@ -29,22 +35,23 @@ async def new_author(author: AuthorIn):
             .first()
 
         if foundauth:
-            raise errmsgs("author", 403)
+            raise errmsgs("author", code.FORBIDDEN.value)
         else:
             newauth = Author(name=author.name)
             sess.add(newauth)
             sess.commit()
-            return author
+            return {"id": newauth, "detail": "Sucess creating author."}
 
 
 class BookIn(BaseModel):
+    "Book creation input."
     name: str
     publisher: str
     yearofpub: int
     summary: str
 
 
-@router.post("/new-book/{author}", status_code=201)
+@router.post(Routes.CreateBook.value, status_code=code.CREATED.value)
 @sys_authorize
 async def new_book(author: str, book: BookIn):
     with Session(engine) as sess:
@@ -68,41 +75,44 @@ async def new_book(author: str, book: BookIn):
             sess.add(newpub)
             sess.commit()
 
-            return newbook
+            return {"id": newbook.id, "detail": "Sucess creating book."}
         else:
-            raise errmsgs("author", 404)
+            raise errmsgs("author", code.NOT_FOUND.value)
 
 
 class eBookIn(BaseModel):
-    bookid: str
-    format: str
+    "eBook creation input."
+    id: str
+    format: e.Formats
 
 
-@router.post("/new-ebook/", status_code=201)
+@router.post(Routes.CreateEBook.value, status_code=code.CREATED.value)
 @sys_authorize
 async def new_ebook(ebook: eBookIn):
 
     with Session(engine) as sess:
         foundbook: Book = sess.query(Book)\
-            .filter(Book.id == ebook.bookid)\
+            .filter(Book.id == ebook.id)\
             .first()
 
         if foundbook:
-            ebook = eBook(id=ebook.identifier, quantity=ebook.quantity)
+            ebook = eBook(id=foundbook.id,
+                          format=ebook.format)
             sess.add(ebook)
             sess.commit()
             return ebook
         else:
-            raise errmsgs("book", 404)
+            raise errmsgs("book", code.NOT_FOUND.value)
 
 
 class InventoryIn(BaseModel):
+    "Inventory creation input."
     identifier: str
     bookid: str
     quantity: int
 
 
-@router.post("/new-inventory/", status_code=201)
+@router.post(Routes.CreateInventory.value, status_code=code.CREATED.value)
 @sys_authorize
 async def new_inventory(inventory: InventoryIn):
 
@@ -119,14 +129,12 @@ async def new_inventory(inventory: InventoryIn):
             sess.commit()
             return ivt
         else:
-            raise errmsgs("book", 404)
+            raise errmsgs("book", code.NOT_FOUND.value)
 
 
-@router.post("/create-sample/{quantity}")
+@router.post(Routes.NewSamples.value)
 @sys_authorize
-async def create_sample(quantity: int):
-    import random
-    import pandas as pd
+async def new_samples(quantity: int):
 
     if not quantity:
         quantity = 10
@@ -192,7 +200,11 @@ async def create_sample(quantity: int):
 
             if random.random() < .5:
                 sess.add(
-                    eBook(id=book.id, format=random.choice(list(e.Formats)).name))
+                    eBook(
+                        id=book.id,
+                        format=random.choice(
+                            list(
+                                e.Formats)).name))
 
             sess.commit()
         return author

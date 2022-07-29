@@ -1,27 +1,30 @@
 
 
-from App import sys_authorize
-from App.Domain.book import Book
-from App.Domain.author import Author
-from App.Domain.publication import Publication
-from App.Controllers.db import engine
-
-from sqlalchemy.orm import Session
-from fastapi import Response
-from fastapi.routing import APIRouter
-from fastapi.encoders import jsonable_encoder
 import json
 from typing import Union
+
+from fastapi import Response
+from fastapi.encoders import jsonable_encoder
+from fastapi.routing import APIRouter
+from sqlalchemy.orm import Session
+
+from App import sys_authorize
+from App.Controllers import Routes
+from App.Controllers.db import engine
+from App.Domain.author import Author
+from App.Domain.book import Book
+from App.Domain.publication import Publication
 
 router = APIRouter()
 
 
-@router.get("/list-books/")
+@router.get(Routes.ReadBooks.value)
 @sys_authorize
 async def list_books(bookname: Union[str, None] = None,
                      authorname: Union[str, None] = None,
                      publisher: Union[str, None] = None,
                      limit: int = 10):
+    "List all books by parameters."
     with Session(engine) as sess:
         bquery = sess.query(Book)
 

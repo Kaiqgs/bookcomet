@@ -1,14 +1,16 @@
 import sqlalchemy as sqa
-from sqlalchemy.orm import relationship
-
 # Specific to mysql: MySQL compliant;
 from sqlalchemy.dialects.mysql import INTEGER
+from sqlalchemy.orm import relationship
+
 from App.Domain import Base
 
 
-
 class Inventory(Base):
-    __tablename__ = "inventory"  # : inventories?
+    """
+    Inventory entity for storage.
+    """
+    __tablename__ = "inventories"
 
     id = sqa.Column(sqa.String(256), primary_key=True)
     book_id = sqa.Column(sqa.Integer,

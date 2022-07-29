@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class Formats(Enum):
+    "List of common books digital formats."
     MOBI = "MOBI"
     EPUB = "EPUB"
     AZW = "AZW"

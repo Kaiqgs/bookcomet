@@ -1,10 +1,13 @@
-from App.Domain import Base
 import sqlalchemy as sqa
-from sqlalchemy.orm import relationship
+
+from App.Domain import Base
 
 
-# Association;
 class Publication(Base):
+    """
+    Publication ORM association table.
+    Used to link Author <-> Books.
+    """
     # Wondering: should publisher be stored in publication?
 
     __tablename__ = 'publications'
